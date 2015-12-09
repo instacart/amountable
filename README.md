@@ -48,9 +48,18 @@ end
 then create it
 
 ```ruby
-order = Order.create(subtotal: Money.new(123), delivery_fee: Money.new(100), bags_fee: Money.new(10), sales_tax: Money.new(56))
-order.subtotal # #<Money fractional:123 currency:USD>
-order.total # #<Money fractional:289 currency:USD>
-order.fees # #<Money fractional:110 currency:USD>
-order.taxes # #<Money fractional:56 currency:USD>
+order = Order.create(
+  subtotal: Money.new(123),
+  delivery_fee: Money.new(100),
+  bags_fee: Money.new(10),
+  sales_tax: Money.new(56)
+  )
+order.subtotal
+# => #<Money fractional:123 currency:USD>
+order.total
+# => #<Money fractional:289 currency:USD>
+order.fees
+# => #<Money fractional:110 currency:USD>
+order.taxes
+# => #<Money fractional:56 currency:USD>
 ```

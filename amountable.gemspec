@@ -32,4 +32,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rspec'
   gem.add_development_dependency 'barrier'
   gem.add_development_dependency 'database_cleaner'
+  gem.add_development_dependency 'activerecord-import'
+
 end
