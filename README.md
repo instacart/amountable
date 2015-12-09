@@ -63,3 +63,11 @@ order.fees
 order.taxes
 # => #<Money fractional:56 currency:USD>
 ```
+
+## Implementation
+
+When you run the migration, an `amounts` table will be created with a polymorphic relationship to an `amountable`, which in the above example would be your orders.
+
+When the an order is created with some amounts, the associated `Amount` objects are persisted.
+
+`Amount` objects are persisted in bulk, so there are no N + 1 queries. If an amount is zero, no `Amount` model is created.
