@@ -3,6 +3,7 @@ PATH
   specs:
     amountable (0.0.1)
       activerecord-import (= 0.10.0)
+      monetize
       money-rails
       rails (~> 4.2)
 
@@ -50,6 +51,7 @@ GEM
     builder (3.2.2)
     concurrent-ruby (1.0.0)
     database_cleaner (1.5.1)
+    db-query-matchers (0.3.0)
     diff-lcs (1.2.5)
     erubis (2.7.0)
     globalid (0.3.6)
@@ -144,6 +146,7 @@ PLATFORMS
 DEPENDENCIES
   amountable!
   database_cleaner
+  db-query-matchers
   mysql2
   pg
   rspec

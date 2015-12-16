@@ -1,5 +1,3 @@
-require 'money-rails'
-
 class Amount < ActiveRecord::Base
 
   belongs_to :amountable, polymorphic: true
