@@ -1,7 +1,3 @@
-require 'active_record'
-require 'active_record/version'
-require 'active_support/core_ext/module'
-
 module Amountable
   extend ActiveSupport::Autoload
   autoload :Amount

@@ -1,0 +1,7 @@
+postgresql:
+  adapter: postgresql
+  hostname: localhost
+  username:
+  password:
+  database: amountable_test
+  encoding: utf8
