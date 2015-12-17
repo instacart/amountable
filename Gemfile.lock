@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    amountable (0.0.1)
+    amountable (0.0.2)
       activerecord-import (= 0.10.0)
       monetize
       money-rails
