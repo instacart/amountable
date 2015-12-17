@@ -1,3 +1,5 @@
+# Copyright 2015, Instacart
+
 class Amount < ActiveRecord::Base
 
   belongs_to :amountable, polymorphic: true

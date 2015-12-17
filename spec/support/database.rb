@@ -1,3 +1,5 @@
+# Copyright 2015, Instacart
+
 db_name = ENV['DB'] || 'postgresql'
 database_yml = File.expand_path('../../internal/config/database.yml', __FILE__)
 

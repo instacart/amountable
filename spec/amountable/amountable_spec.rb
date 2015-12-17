@@ -1,3 +1,5 @@
+# Copyright 2015, Instacart
+
 require 'spec_helper'
 
 describe Amountable do

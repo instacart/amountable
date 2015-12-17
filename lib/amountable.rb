@@ -1,3 +1,5 @@
+# Copyright 2015, Instacart
+
 module Amountable
   extend ActiveSupport::Autoload
   autoload :Amount

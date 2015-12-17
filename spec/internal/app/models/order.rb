@@ -1,3 +1,5 @@
+# Copyright 2015, Instacart
+
 class Order < ActiveRecord::Base
 
   include Amountable

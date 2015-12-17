@@ -1,3 +1,5 @@
+# Copyright 2015, Instacart
+
 ENV['RAILS_ENV'] = 'test'
 require 'rails'
 require 'money-rails'

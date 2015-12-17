@@ -1,3 +1,5 @@
+# Copyright 2015, Instacart
+
 ActiveRecord::Schema.define version: 1 do
 
   create_table "amounts", force: :cascade do |t|

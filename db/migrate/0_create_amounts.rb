@@ -1,3 +1,5 @@
+# Copyright 2015, Instacart
+
 class CreateAmounts < ActiveRecord::Migration
   def change
     create_table :amounts do |t|
