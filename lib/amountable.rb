@@ -102,11 +102,18 @@ module Amountable
       end
 
       define_method "#{name}=" do |value|
-        return Money.zero if value.zero?
         amount = find_amount(name) || amounts.build(name: name)
         amount.value = value.to_money
-        all_amounts << amount if amount.new_record?
-        (@amounts_by_name ||= {})[name.to_sym] = amount
+        if value.zero?
+          amounts.delete(amount)
+          all_amounts.delete(amount)
+          @amounts_by_name.delete(name)
+          amount.destroy
+        else
+          all_amounts << amount if amount.new_record?
+          (@amounts_by_name ||= {})[name.to_sym] = amount
+        end
+        value.to_money
       end
 
       Array(options[:summable] || options[:summables] || options[:set] || options[:sets] || options[:amount_set] || options[:amount_sets]).each do |set|

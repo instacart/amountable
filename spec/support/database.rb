@@ -28,7 +28,7 @@ if File.exist?(database_yml)
     ActiveRecord::Base.establish_connection(config)
   end
 
-  load(File.dirname(__FILE__) + '/../internal/db/schema.rb')
+  #load(File.dirname(__FILE__) + '/../internal/db/schema.rb')
   load(File.dirname(__FILE__) + '/../internal/app/models/order.rb')
 
 else
