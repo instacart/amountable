@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    amountable (0.0.2)
+    amountable (0.0.3)
       activerecord-import (= 0.10.0)
       monetize
       money-rails
@@ -154,4 +154,4 @@ DEPENDENCIES
   sqlite3
 
 BUNDLED WITH
-   1.10.6
+   1.11.2
