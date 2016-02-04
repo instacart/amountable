@@ -1,6 +1,7 @@
 # Amountable
 
 [![Build Status](https://travis-ci.org/instacart/amountable.svg?branch=master)](https://travis-ci.org/instacart/amountable)
+[![Gem Version](https://badge.fury.io/rb/amountable.svg)](https://badge.fury.io/rb/amountable)
 
 This gem helps you integrate Money fields into your ActiveRecord models without having to add new columns each time.
 
