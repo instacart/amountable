@@ -13,7 +13,7 @@ ActiveRecord::Schema.define do
   end
   add_index "amounts", ["amountable_id", "amountable_type"], name: "index_amounts_on_amountable_id_and_amountable_type", using: :btree
 
-  create_table "orders" do |t|
+  create_table "orders", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
