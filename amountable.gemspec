@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q{With Amountable, you can easily attach, organize and sum Ruby money fields to your models without migrating.}
   gem.summary       = 'Easy Money fields for your Rails models.'
   gem.homepage      = 'https://github.com/instacart/amountable'
-#  gem.license       = 'MIT'
+  gem.license       = 'ISC'
 
   gem.files         = `git ls-files`.split($/)
   gem.test_files    = gem.files.grep(%r{^spec/})
