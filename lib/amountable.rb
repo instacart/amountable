@@ -108,7 +108,7 @@ module Amountable
           amounts.delete(amount)
           all_amounts.delete(amount)
           @amounts_by_name.delete(name)
-          amount.destroy
+          amount.destroy if amount.persisted?
         else
           all_amounts << amount if amount.new_record?
           (@amounts_by_name ||= {})[name.to_sym] = amount
