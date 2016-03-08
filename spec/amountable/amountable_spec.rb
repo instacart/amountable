@@ -26,6 +26,24 @@ describe Amountable do
     end.not_to change { Amount.count }
   end
 
+  describe 'validates' do
+    let (:order) { Order.new(coupon: Money.new(10)) }
+
+    it 'should be invalid' do
+      expect(order.valid?).to be false
+    end
+
+    it 'should have an error message' do
+      order.valid?
+      expect(order.errors[:coupon].any?).to be true
+    end
+
+    it 'should not save' do
+      expect(order.save).to be false
+      expect(order.persisted?).to be false
+    end
+  end
+
   describe 'name=' do
     let (:order) { Order.create }
 

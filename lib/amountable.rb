@@ -6,6 +6,38 @@ module Amountable
   autoload :VERSION
 
   class InvalidAmountName < StandardError; end
+  class InvalidAmount < StandardError; end
+
+  class Validator < Struct.new(:amount, :validation)
+
+    class InvalidValidation < StandardError; end
+
+    ALLOWED_VALIDATIONS = %i(positive negative round)
+
+    def initialize(amount, validation)
+      raise InvalidValidation unless ALLOWED_VALIDATIONS.include?(validation.to_sym)
+      super(amount, validation.to_sym)
+    end
+
+    def valid?
+      send("#{validation}?")
+    end
+
+    protected
+
+    def positive?
+      amount.value > Money.zero
+    end
+
+    def negative?
+      amount.value < Money.zero
+    end
+
+    def round?
+      (amount.value.fractional % 100).zero?
+    end
+
+  end
 
   def self.included(base)
 
@@ -13,11 +45,13 @@ module Amountable
 
     base.class_eval do
       has_many :amounts, as: :amountable, dependent: :destroy, autosave: false
-      validate :validate_amount_names
+      validate :validate_amount_names, :validate_amounts
       class_attribute :amount_names
       class_attribute :amount_sets
+      class_attribute :amount_validations
       self.amount_sets = Hash.new { |h, k| h[k] = Set.new }
       self.amount_names = Set.new
+      self.amount_validations = Hash.new { |h, k| h[k] = {} }
 
       def all_amounts
         @all_amounts ||= amounts.to_set
@@ -52,14 +86,35 @@ module Amountable
 
       def save(args = {})
         ActiveRecord::Base.transaction do
-          save_amounts if super(args)
+          super(args).tap do |saved|
+            save_amounts! if saved
+          end
         end
+      rescue ActiveRecord::InvalidRecord
+        false
       end
 
       def save!(args = {})
         ActiveRecord::Base.transaction do
           save_amounts! if super(args)
         end
+      end
+
+      protected
+
+      def validate_amounts
+        all_amounts.all? do |amount|
+          validate_amount(amount)
+        end
+      end
+
+      def validate_amount(amount)
+        self.amount_validations[amount.name.to_sym].each do |name, do_validation|
+          next if Validator.new(amount, name).valid?
+          error_message = "#{amount.name} failed #{name} validation: #{amount.value}."
+          errors.add(amount.name.to_sym, error_message)
+        end
+        errors[amount.name.to_sym].empty?
       end
 
       def save_amounts(bang: false)
@@ -100,6 +155,8 @@ module Amountable
       define_method name do
         (find_amount(name) || NilAmount.new).value
       end
+
+      self.amount_validations[name.to_sym] = options[:validates] if options[:validates]
 
       define_method "#{name}=" do |value|
         amount = find_amount(name) || amounts.build(name: name)

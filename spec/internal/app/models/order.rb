@@ -6,5 +6,6 @@ class Order < ActiveRecord::Base
 
   amount :sub_total, sets: [:total]
   amount :taxes, sets: [:total]
+  amount :coupon, validates: {negative: true}
 
 end
