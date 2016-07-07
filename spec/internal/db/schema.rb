@@ -1,4 +1,4 @@
-# Copyright 2015, Instacart
+# Copyright 2015-2016, Instacart
 
 ActiveRecord::Schema.define do
 
