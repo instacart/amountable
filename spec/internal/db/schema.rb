@@ -17,4 +17,12 @@ ActiveRecord::Schema.define do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  if jsonb_available?
+    create_table "subscriptions", force: :cascade do |t|
+      t.datetime "created_at"
+      t.datetime "updated_at"
+      t.jsonb    "amounts",       default: '{}', null: false
+    end
+  end
 end

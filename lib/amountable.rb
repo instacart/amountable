@@ -4,31 +4,37 @@ module Amountable
   extend ActiveSupport::Autoload
   autoload :Amount
   autoload :VERSION
+  autoload :TableMethods
+  autoload :JsonbMethods
 
   class InvalidAmountName < StandardError; end
+  class MissingColumn < StandardError; end
+
+  ALLOWED_STORAGE = %i(table json).freeze
 
   def self.included(base)
 
     base.extend Amountable::ClassMethods
 
     base.class_eval do
-      has_many :amounts, as: :amountable, dependent: :destroy, autosave: false
       validate :validate_amount_names
       class_attribute :amount_names
       class_attribute :amount_sets
+      class_attribute :amount_storage
       self.amount_sets = Hash.new { |h, k| h[k] = Set.new }
       self.amount_names = Set.new
+      self.amount_storage = :table
 
       def all_amounts
         @all_amounts ||= amounts.to_set
       end
 
       def find_amount(name)
-        (@amounts_by_name ||= {})[name.to_sym] ||= all_amounts.find { |am| am.name == name.to_s }
+        (@amounts_by_name ||= {})[name.to_sym] ||= amounts.to_set.find { |am| am.name == name.to_s }
       end
 
       def find_amounts(names)
-        all_amounts.select { |am| names.include?(am.name.to_sym) }
+        amounts.to_set.select { |am| names.include?(am.name.to_sym) }
       end
 
       def validate_amount_names
@@ -49,42 +55,25 @@ module Amountable
           end
         end
       end
-
-      def save(args = {})
-        ActiveRecord::Base.transaction do
-          save_amounts if super(args)
-        end
-      end
-
-      def save!(args = {})
-        ActiveRecord::Base.transaction do
-          save_amounts! if super(args)
-        end
-      end
-
-      def save_amounts(bang: false)
-        amounts_to_insert = []
-        amounts.each do |amount|
-          if amount.new_record?
-            amount.amountable_id = self.id
-            amounts_to_insert << amount
-          else
-            bang ? amount.save! : amount.save
-          end
-        end
-        Amount.import(amounts_to_insert, timestamps: true, validate: false)
-        amounts_to_insert.each do |amount|
-          amount.instance_variable_set(:@new_record, false)
-        end
-        true
-      end
-
-      def save_amounts!; save_amounts(bang: true); end
-
     end
   end
 
   module ClassMethods
+
+    # Possible storage values: [:table, :jsonb]
+    def act_as_amountable(options = {})
+      self.amount_storage = (options[:storage] || :table).to_sym
+      case self.amount_storage
+      when :table
+        has_many :amounts, as: :amountable, dependent: :destroy, autosave: false
+        include Amountable::TableMethods
+      when :jsonb
+        raise MissingColumn.new("You need an amounts jsonb field on the #{self.table_name} table.") unless column_names.include?('amounts')
+        include Amountable::JsonbMethods
+      else
+        raise ArgumentError.new("Please specify a storage: #{ALLOWED_STORAGE}")
+      end
+    end
 
     def amount_set(set_name, component)
       self.amount_sets[set_name.to_sym] << component.to_sym
@@ -102,18 +91,7 @@ module Amountable
       end
 
       define_method "#{name}=" do |value|
-        amount = find_amount(name) || amounts.build(name: name)
-        amount.value = value.to_money
-        if value.zero?
-          amounts.delete(amount)
-          all_amounts.delete(amount)
-          @amounts_by_name.delete(name)
-          amount.destroy if amount.persisted?
-        else
-          all_amounts << amount if amount.new_record?
-          (@amounts_by_name ||= {})[name.to_sym] = amount
-        end
-        value.to_money
+        set_amount(name, value)
       end
 
       Array(options[:summable] || options[:summables] || options[:set] || options[:sets] || options[:amount_set] || options[:amount_sets]).each do |set|

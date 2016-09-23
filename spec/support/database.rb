@@ -29,6 +29,16 @@ rescue
   ActiveRecord::Base.establish_connection(config)
 end
 
+def jsonb_available?
+  return @@jsonb_available if defined?(@@jsonb_available)
+  @@jsonb_available = if ActiveRecord::Base.connection.class.ancestors.include?(ActiveRecord::Import::PostgreSQLAdapter)
+    version = /PostgreSQL\s(\d+.\d+.\d+)\s/.match(ActiveRecord::Base.connection.execute("select version();")[0]['version'])[1].split('.').map(&:to_i)
+    version[0] >= 9 && version[1] >= 3
+  else
+    false
+  end
+end
+
 require_relative '../internal/db/schema'
 
 Dir[spec_dir.join('internal/app/models/*.rb')].each { |file| require_relative file }
