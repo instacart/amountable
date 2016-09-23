@@ -34,21 +34,25 @@ module Amountable
     def save_amounts(bang: false)
       amounts_to_insert = []
       amounts.each do |amount|
-      if amount.new_record?
-        amount.amountable_id = self.id
-        amounts_to_insert << amount
-      else
-        bang ? amount.save! : amount.save
+        if amount.new_record?
+          amount.amountable_id = self.id
+          amounts_to_insert << amount
+        else
+          bang ? amount.save! : amount.save
+        end
       end
+      Amount.import(amounts_to_insert, timestamps: true, validate: false)
+      amounts_to_insert.each do |amount|
+        amount.instance_variable_set(:@new_record, false)
+      end
+      true
     end
-    Amount.import(amounts_to_insert, timestamps: true, validate: false)
-    amounts_to_insert.each do |amount|
-      amount.instance_variable_set(:@new_record, false)
-    end
-    true
-  end
 
-  def save_amounts!; save_amounts(bang: true); end
+    def save_amounts!; save_amounts(bang: true); end
+
+    def get_set(name)
+      find_amounts(self.amount_sets[name.to_sym]).sum(Money.zero, &:value)
+    end
 
   end
 end

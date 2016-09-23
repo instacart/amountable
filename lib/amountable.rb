@@ -79,7 +79,7 @@ module Amountable
       self.amount_sets[set_name.to_sym] << component.to_sym
 
       define_method set_name do
-        find_amounts(self.amount_sets[set_name.to_sym]).sum(Money.zero, &:value)
+        get_set(set_name)
       end
     end
 

@@ -69,7 +69,7 @@ describe Amountable do
       end
       subscription.sub_total = Money.new(100)
       expect(subscription.sub_total).to eq(Money.new(100))
-      expect(subscription.attributes['amounts']).to eq({'amounts' => {'sub_total' => {'value_cents' => 100, 'value_currency' => 'USD'}}})
+      expect(subscription.attributes['amounts']).to eq({'amounts' => {'sub_total' => {'cents' => 100, 'currency' => 'USD'}}, 'sets' => {'total' => {'cents' => 100, 'currency' => 'USD'}}})
       expect(subscription.total).to eq(Money.new(100))
       expect(subscription.amounts.size).to eq(1)
       subscription.amounts.first.tap do |amount|
@@ -81,6 +81,7 @@ describe Amountable do
       end
       subscription.update_attributes(sub_total: Money.new(200))
       expect(subscription.sub_total).to eq(Money.new(200))
+      expect(subscription.total).to eq(Money.new(200))
     end
   end
 
