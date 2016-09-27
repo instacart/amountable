@@ -63,7 +63,7 @@ describe Amountable do
       subscription = Subscription.new
       expect { subscription.save }.not_to change { Amount.count }
       expect(subscription.amounts).to eq(Set.new)
-      expect(subscription.attributes['amounts']).to eq({})
+      expect(subscription.attributes['amounts']).to be_nil
       %i(sub_total taxes total).each do |name|
         expect(subscription.send(name)).to eq(Money.zero)
       end

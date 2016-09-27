@@ -20,10 +20,10 @@ module Amountable
       validate :validate_amount_names
       class_attribute :amount_names
       class_attribute :amount_sets
-      class_attribute :amount_storage
+      class_attribute :amounts_column_name
       self.amount_sets = Hash.new { |h, k| h[k] = Set.new }
       self.amount_names = Set.new
-      self.amount_storage = :table
+      self.amounts_column_name = 'amounts'
 
       def all_amounts
         @all_amounts ||= amounts.to_set
@@ -62,13 +62,13 @@ module Amountable
 
     # Possible storage values: [:table, :jsonb]
     def act_as_amountable(options = {})
-      self.amount_storage = (options[:storage] || :table).to_sym
-      case self.amount_storage
+      case (options[:storage] || :table).to_sym
       when :table
         has_many :amounts, as: :amountable, dependent: :destroy, autosave: false
         include Amountable::TableMethods
       when :jsonb
-        raise MissingColumn.new("You need an amounts jsonb field on the #{self.table_name} table.") unless column_names.include?('amounts')
+        self.amounts_column_name = options[:column].to_s if options[:column]
+        raise MissingColumn.new("You need an amounts jsonb field on the #{self.table_name} table.") unless column_names.include?(self.amounts_column_name)
         include Amountable::JsonbMethods
       else
         raise ArgumentError.new("Please specify a storage: #{ALLOWED_STORAGE}")

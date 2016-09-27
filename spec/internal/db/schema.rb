@@ -22,7 +22,7 @@ ActiveRecord::Schema.define do
     create_table "subscriptions", force: :cascade do |t|
       t.datetime "created_at"
       t.datetime "updated_at"
-      t.jsonb    "amounts",       default: '{}', null: false
+      t.jsonb    "amounts"
     end
   end
 end
