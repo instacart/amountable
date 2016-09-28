@@ -87,7 +87,7 @@ module Amountable
       (self.amount_names ||= Set.new) << name
 
       define_method name do
-        (find_amount(name) || NilAmount.new).value
+        (find_amount(name) || ::NilAmount.new).value
       end
 
       define_method "#{name}=" do |value|
