@@ -9,6 +9,13 @@ class Amount < ActiveRecord::Base
   validates :name, presence: true
   validates :name, uniqueness: {scope: [:amountable_id, :amountable_type]}
 
+  attr_accessor :persistable
+
+  def save
+    raise StandardError.new("Can't persist amount to database") if persistable == false
+    super
+  end
+
   module Operations
 
     def +(other_value)

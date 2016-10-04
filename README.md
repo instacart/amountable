@@ -40,6 +40,7 @@ Setup your model
 ```ruby
 class Order < ActiveRecord::Base
   include Amountable
+  act_as_amountable
   amount :subtotal, sets: [:total]
   amount :delivery_fee, sets: [:total, :fees]
   amount :bags_fee, sets: [:total, :fees]
@@ -47,6 +48,14 @@ class Order < ActiveRecord::Base
   amount :local_tax, sets: [:total, :taxes]
 end
 ```
+
+`act_as_amountable` can take the `storage` option:
+
+```
+  act_as_amountable storage: :table
+```
+
+where `storage` can be either `:table`, the `amounts` table will be used to store amounts, or `:jsonb`, a JSONB field will be used on the amountable object to store amounts are json. If you use the JSONB format, you can specify the name of the column with the `column` option. The default value for the `storage` option is `:table`.
 
 then create it
 
@@ -74,3 +83,5 @@ When you run the migration, an `amounts` table will be created with a polymorphi
 When the an order is created with some amounts, the associated `Amount` objects are persisted.
 
 `Amount` objects are persisted in bulk, so there are no N + 1 queries. If an amount is zero, no `Amount` model is created.
+
+If you choose the JSONB storage option, the `amounts` table will not be used. Instead a JSONB column on the target model will be used.

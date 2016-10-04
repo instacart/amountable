@@ -34,4 +34,8 @@ describe Amount do
     expect(Amount.new(value: Money.new(2)).to_money).to eq(Money.new(2))
   end
 
+  it 'should not save if not persistable' do
+    expect { Amount.new(persistable: false).save }.to raise_exception(StandardError)
+  end
+
 end
