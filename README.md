@@ -39,7 +39,6 @@ Setup your model
 
 ```ruby
 class Order < ActiveRecord::Base
-  include Amountable
   act_as_amountable
   amount :subtotal, sets: [:total]
   amount :delivery_fee, sets: [:total, :fees]
