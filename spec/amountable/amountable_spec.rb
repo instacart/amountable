@@ -7,7 +7,7 @@ describe Amountable do
   context 'storage == :table' do
     it 'should' do
       order = Order.new
-      expect { order.save }.not_to change { Amount.count }
+      expect { order.save }.not_to change { Amountable::Amount.count }
       %i(sub_total taxes total).each do |name|
         expect(order.send(name)).to eq(Money.zero)
       end
@@ -19,12 +19,12 @@ describe Amountable do
         expect(amount.name).to eq('sub_total')
         expect(amount.value).to eq(Money.new(100))
         expect(amount.new_record?).to be true
-        expect { order.save }.to change { Amount.count }.by(1)
+        expect { order.save }.to change { Amountable::Amount.count }.by(1)
         expect(amount.persisted?).to be true
       end
       expect do
         expect(order.update_attributes(sub_total: Money.new(200)))
-      end.not_to change { Amount.count }
+      end.not_to change { Amountable::Amount.count }
     end
 
     describe 'name=' do
@@ -32,20 +32,20 @@ describe Amountable do
 
       it 'should not persist Money.zero' do
         expect(order.sub_total = Money.zero).to eq(Money.zero)
-        expect { order.save }.not_to change { Amount.count }
+        expect { order.save }.not_to change { Amountable::Amount.count }
       end
 
       it 'should not persist Money.zero if using ActiveRecord persistence' do
-        expect { order.update(sub_total: Money.zero) }.not_to change { Amount.count }
+        expect { order.update(sub_total: Money.zero) }.not_to change { Amountable::Amount.count }
       end
 
       it 'should work with ActiveRecord#update' do
-        expect { order.update(sub_total: Money.new(1)) }.to change { Amount.count }.by(1)
+        expect { order.update(sub_total: Money.new(1)) }.to change { Amountable::Amount.count }.by(1)
       end
 
       it 'should destroy Amount if exist and assigning Money.zero' do
         order.update(sub_total: Money.new(1))
-        expect { order.sub_total = Money.zero }.to change { Amount.count }.by(-1)
+        expect { order.sub_total = Money.zero }.to change { Amountable::Amount.count }.by(-1)
         expect(order.amounts.empty?).to be true
       end
     end
@@ -61,7 +61,7 @@ describe Amountable do
   context 'storage == :jsonb' do
     it 'should' do
       subscription = Subscription.new
-      expect { subscription.save }.not_to change { Amount.count }
+      expect { subscription.save }.not_to change { Amountable::Amount.count }
       expect(subscription.amounts).to eq(Set.new)
       expect(subscription.attributes['amounts']).to be_nil
       %i(sub_total taxes total).each do |name|
@@ -76,7 +76,7 @@ describe Amountable do
         expect(amount.name).to eq('sub_total')
         expect(amount.value).to eq(Money.new(100))
         expect(amount.new_record?).to be true
-        expect { subscription.save }.not_to change { Amount.count }
+        expect { subscription.save }.not_to change { Amountable::Amount.count }
         expect(amount.persisted?).to be false
       end
       subscription.update_attributes(sub_total: Money.new(200))
