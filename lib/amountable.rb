@@ -15,7 +15,7 @@ module Amountable
   ALLOWED_STORAGE = %i(table json).freeze
 
   def self.included(base)
-    base.extend Amountable::ClassMethods
+    base.extend Amountable::ActAsMethod
   end
 
   module InstanceMethods
@@ -52,10 +52,11 @@ module Amountable
     end
   end
 
-  module ClassMethods
+  module ActAsMethod
 
     # Possible storage values: [:table, :jsonb]
     def act_as_amountable(options = {})
+      self.extend Amountable::ClassMethod
       class_attribute :amount_names
       class_attribute :amount_sets
       class_attribute :amounts_column_name
@@ -79,6 +80,9 @@ module Amountable
       include Amountable::InstanceMethods
     end
 
+  end
+
+  module ClassMethod
     def amount_set(set_name, component)
       self.amount_sets[set_name.to_sym] << component.to_sym
 
@@ -140,7 +144,7 @@ module Amountable
       elsif name.in?(self.amount_sets.keys)
         'sets'
       end
-      "#{self.amounts_column_name}::json#>>'{#{group},#{name},#{field}}'"
+      "#{self.amounts_column_name}::json#>'{#{group},#{name},#{field}}'"
     end
 
   end
