@@ -59,10 +59,12 @@ module Amountable
       class_attribute :amount_names
       class_attribute :amount_sets
       class_attribute :amounts_column_name
+      class_attribute :storage
       self.amount_sets = Hash.new { |h, k| h[k] = Set.new }
       self.amount_names = Set.new
       self.amounts_column_name = 'amounts'
-      case (options[:storage] || :table).to_sym
+      self.storage = (options[:storage] || :table).to_sym
+      case self.storage
       when :table
         has_many :amounts, class_name: 'Amountable::Amount', as: :amountable, dependent: :destroy, autosave: false
         include Amountable::TableMethods
@@ -103,6 +105,42 @@ module Amountable
 
     def allowed_amount_name?(name)
       self.amount_names.include?(name.to_sym)
+    end
+
+    def where(opts, *rest)
+      return super unless opts.is_a?(Hash)
+      if self.storage == :jsonb
+        where_json(opts, *rest)
+      else
+        super
+      end
+    end
+
+    def where_json(opts, *rest)
+      values = []
+      query = opts.inject([]) do |mem, (column, value)|
+        column = column.to_sym
+        if column.in?(self.amount_names) || column.in?(self.amount_sets.keys)
+          mem << "#{self.pg_json_field_access(column, :cents)} = '%s'"
+          mem << "#{self.pg_json_field_access(column, :currency)} = '%s'"
+          values << value.to_money.fractional
+          values << value.to_money.currency.iso_code
+          opts.delete(column)
+        end
+        mem
+      end
+      query = [query.join(' AND ')] + values
+      where(query, *rest).where(opts, *rest)
+    end
+
+    def pg_json_field_access(name, field = :cents)
+      name = name.to_sym
+      group = if name.in?(self.amount_names)
+        'amounts'
+      elsif name.in?(self.amount_sets.keys)
+        'sets'
+      end
+      "#{self.amounts_column_name}::json#>>'{#{group},#{name},#{field}}'"
     end
 
   end
