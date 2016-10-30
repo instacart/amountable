@@ -12,11 +12,14 @@ module Amountable
 
     def set_amount(name, value)
       value = value.to_money
-      return value if value.zero?
       initialize_column
       amounts_json = attribute(amounts_column_name)
       amounts_json['amounts'] ||= {}
-      amounts_json['amounts'][name.to_s] = {'cents' => value.fractional, 'currency' => value.currency.iso_code}
+      if value.zero?
+        amounts_json['amounts'].delete(name.to_s)
+      else
+        amounts_json['amounts'][name.to_s] = {'cents' => value.fractional, 'currency' => value.currency.iso_code}
+      end
       set_json(amounts_json)
       @_amounts = nil
       @amounts_by_name = nil
@@ -30,6 +33,7 @@ module Amountable
       amounts_json['sets'] = {}
       amount_sets.each do |name, amount_names|
         sum = find_amounts(amount_names).sum(Money.zero, &:value)
+        next if sum.zero?
         amounts_json['sets'][name.to_s] = {'cents' => sum.fractional, 'currency' => sum.currency.iso_code}
       end
       set_json(amounts_json)

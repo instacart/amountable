@@ -82,6 +82,10 @@ describe Amountable do
       subscription.update_attributes(sub_total: Money.new(200))
       expect(subscription.sub_total).to eq(Money.new(200))
       expect(subscription.total).to eq(Money.new(200))
+      subscription.sub_total = Money.zero
+      expect(subscription.sub_total).to eq(Money.zero)
+      expect(subscription.total).to eq(Money.zero)
+      expect(subscription.attributes['amounts']).to eq({'amounts' => {}, 'sets' => {}})
     end
   end
 
