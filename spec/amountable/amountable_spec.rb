@@ -58,34 +58,36 @@ describe Amountable do
     end
   end
 
-  context 'storage == :jsonb' do
-    it 'should' do
-      subscription = Subscription.new
-      expect { subscription.save }.not_to change { Amountable::Amount.count }
-      expect(subscription.amounts).to eq(Set.new)
-      expect(subscription.attributes['amounts']).to be_nil
-      %i(sub_total taxes total).each do |name|
-        expect(subscription.send(name)).to eq(Money.zero)
-      end
-      subscription.sub_total = Money.new(100)
-      expect(subscription.sub_total).to eq(Money.new(100))
-      expect(subscription.attributes['amounts']).to eq({'amounts' => {'sub_total' => {'cents' => 100, 'currency' => 'USD'}}, 'sets' => {'total' => {'cents' => 100, 'currency' => 'USD'}}})
-      expect(subscription.total).to eq(Money.new(100))
-      expect(subscription.amounts.size).to eq(1)
-      subscription.amounts.first.tap do |amount|
-        expect(amount.name).to eq('sub_total')
-        expect(amount.value).to eq(Money.new(100))
-        expect(amount.new_record?).to be true
+  if jsonb_available?
+    context 'storage == :jsonb' do
+      it 'should' do
+        subscription = Subscription.new
         expect { subscription.save }.not_to change { Amountable::Amount.count }
-        expect(amount.persisted?).to be false
+        expect(subscription.amounts).to eq(Set.new)
+        expect(subscription.attributes['amounts']).to be_nil
+        %i(sub_total taxes total).each do |name|
+          expect(subscription.send(name)).to eq(Money.zero)
+        end
+        subscription.sub_total = Money.new(100)
+        expect(subscription.sub_total).to eq(Money.new(100))
+        expect(subscription.attributes['amounts']).to eq({'amounts' => {'sub_total' => {'cents' => 100, 'currency' => 'USD'}}, 'sets' => {'total' => {'cents' => 100, 'currency' => 'USD'}}})
+        expect(subscription.total).to eq(Money.new(100))
+        expect(subscription.amounts.size).to eq(1)
+        subscription.amounts.first.tap do |amount|
+          expect(amount.name).to eq('sub_total')
+          expect(amount.value).to eq(Money.new(100))
+          expect(amount.new_record?).to be true
+          expect { subscription.save }.not_to change { Amountable::Amount.count }
+          expect(amount.persisted?).to be false
+        end
+        subscription.update_attributes(sub_total: Money.new(200))
+        expect(subscription.sub_total).to eq(Money.new(200))
+        expect(subscription.total).to eq(Money.new(200))
+        subscription.sub_total = Money.zero
+        expect(subscription.sub_total).to eq(Money.zero)
+        expect(subscription.total).to eq(Money.zero)
+        expect(subscription.attributes['amounts']).to eq({'amounts' => {}, 'sets' => {}})
       end
-      subscription.update_attributes(sub_total: Money.new(200))
-      expect(subscription.sub_total).to eq(Money.new(200))
-      expect(subscription.total).to eq(Money.new(200))
-      subscription.sub_total = Money.zero
-      expect(subscription.sub_total).to eq(Money.zero)
-      expect(subscription.total).to eq(Money.zero)
-      expect(subscription.attributes['amounts']).to eq({'amounts' => {}, 'sets' => {}})
     end
   end
 
