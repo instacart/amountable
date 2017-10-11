@@ -1,4 +1,4 @@
-# Copyright 2015-2016, Instacart
+# Copyright 2015-2017, Instacart
 
 module Amountable
   module TableMethods
