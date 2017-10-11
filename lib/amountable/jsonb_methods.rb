@@ -41,7 +41,7 @@ module Amountable
 
     def get_set(name)
       value = attribute(amounts_column_name).to_h['sets'].to_h[name.to_s].to_h
-      Money.new(value['cents'].to_i, value['currency'] || 'USD')
+      Money.new(value['cents'].to_i, value['currency'])
     end
 
     def set_json(json)
