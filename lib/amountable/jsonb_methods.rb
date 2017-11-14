@@ -6,7 +6,7 @@ module Amountable
 
     def amounts
       @_amounts ||= attribute(amounts_column_name).to_h['amounts'].to_h.map do |name, amount|
-        Amount.new(name: name, value_cents: amount['cents'], value_currency: amount['value_currency'], persistable: false, amountable: self)
+        Amount.new(name: name, value_cents: amount['cents'], value_currency: amount['currency'], persistable: false, amountable: self)
       end.to_set
     end
 
