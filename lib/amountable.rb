@@ -4,6 +4,7 @@ module Amountable
   extend ActiveSupport::Autoload
   autoload :Operations
   autoload :Amount
+  autoload :VirtualAmount
   autoload :NilAmount
   autoload :VERSION
   autoload :TableMethods
