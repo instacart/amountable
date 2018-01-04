@@ -17,8 +17,8 @@ Gem::Specification.new do |gem|
   gem.require_paths = ['lib']
   gem.required_ruby_version     = '>= 2.1.1'
 
-  gem.add_dependency 'activerecord', '>= 4.1', '< 5.1'
-  gem.add_dependency 'activesupport', '>= 4.1', '< 5.1'
+  gem.add_dependency 'activerecord', '>= 4.1', '< 5.2'
+  gem.add_dependency 'activesupport', '>= 4.1', '< 5.2'
   gem.add_dependency 'activerecord-import', '~> 0.19.1'
   gem.add_dependency 'money-rails'
   gem.add_dependency 'monetize'
