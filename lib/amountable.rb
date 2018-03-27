@@ -71,7 +71,6 @@ module Amountable
         include Amountable::TableMethods
       when :jsonb
         self.amounts_column_name = options[:column].to_s if options[:column]
-        raise MissingColumn.new("You need an amounts jsonb field on the #{self.table_name} table.") unless column_names.include?(self.amounts_column_name)
         include Amountable::JsonbMethods
       else
         raise ArgumentError.new("Please specify a storage: #{ALLOWED_STORAGE}")
