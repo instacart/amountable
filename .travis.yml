@@ -1,5 +1,14 @@
 language: ruby
 rvm:
- - 2.2.2
+ - 2.6
 addons:
-  postgresql: "9.4"
+  postgresql: "9.6"
+
+deploy:
+  provider: rubygems
+  api_key:
+    secure: "FIXME"
+  gem: amountable
+  on:
+    tags: true
+    repo: instacart/amountable
