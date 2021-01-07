@@ -1,4 +1,4 @@
-name: Ruby Gem
+name: Publish Public Gem
 
 on:
   release:
