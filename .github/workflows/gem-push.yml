@@ -26,6 +26,7 @@ jobs:
       env:
         GEM_HOST_API_KEY: "Bearer ${{secrets.GITHUB_TOKEN}}"
         OWNER: ${{ github.repository_owner }}
+      continue-on-error: true
     - name: Publish to RubyGems
       run: |
         gem push --verbose *.gem
