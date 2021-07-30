@@ -12,8 +12,11 @@ jobs:
     strategy:
       matrix:
         ruby:
-          - 2.6
-          - 2.7
+          - '2.6'
+          - '2.7'
+        activerecord:
+          - '5.2'
+          - '6.0'
     services:
       postgres:
         image: postgres:12
@@ -28,7 +31,9 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-    name: Ruby ${{ matrix.ruby }}
+    name: Ruby ${{ matrix.ruby }} / ActiveRecord ${{ matrix.activerecord }}
+    env:
+      BUNDLE_GEMFILE: gemfiles/activerecord_${{ matrix.activerecord }}.gemfile
     steps:
       - uses: actions/checkout@v2
       - run: |
