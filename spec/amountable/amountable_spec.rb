@@ -23,7 +23,7 @@ describe Amountable do
         expect(amount.persisted?).to be true
       end
       expect do
-        expect(order.update_attributes(sub_total: Money.new(200)))
+        expect(order.update(sub_total: Money.new(200)))
       end.not_to change { Amountable::Amount.count }
     end
 
@@ -80,7 +80,7 @@ describe Amountable do
           expect { subscription.save }.not_to change { Amountable::Amount.count }
           expect(amount.persisted?).to be false
         end
-        subscription.update_attributes(sub_total: Money.new(200))
+        subscription.update(sub_total: Money.new(200))
         expect(subscription.sub_total).to eq(Money.new(200))
         expect(subscription.total).to eq(Money.new(200))
         subscription.sub_total = Money.zero
