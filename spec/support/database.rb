@@ -1,10 +1,16 @@
 # Copyright 2015-2021, Instacart
 
+require "activerecord-import/base"
+
 db_name = ENV['DB'] || 'postgresql'
 spec_dir = Pathname.new(File.dirname(__FILE__)) / '..'
 database_yml = spec_dir.join('internal/config/database.yml')
 
 fail "Please create #{database_yml} first to configure your database. Take a look at: #{database_yml}.sample" unless File.exist?(database_yml)
+
+module ActiveRecord::Import::Connection
+  ruby2_keywords :establish_connection if Module.private_method_defined?(:ruby2_keywords)
+end
 
 ActiveRecord::Migration.verbose = false
 ActiveRecord::Base.default_timezone = :utc
