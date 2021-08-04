@@ -15,8 +15,9 @@ jobs:
           - '2.6'
           - '2.7'
         activerecord:
-          - '5.2'
+          - '6.1'
           - '6.0'
+          - '5.2'
     services:
       postgres:
         image: postgres:12

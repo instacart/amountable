@@ -10,7 +10,7 @@ ActiveRecord::Migration.verbose = false
 ActiveRecord::Base.default_timezone = :utc
 ActiveRecord::Base.configurations = YAML.load_file(database_yml)
 ActiveRecord::Base.logger = Logger.new(File.join(File.dirname(__FILE__), '../debug.log'))
-ActiveRecord::Base.logger.level = ENV['TRAVIS'] ? ::Logger::ERROR : ::Logger::DEBUG
+ActiveRecord::Base.logger.level = ENV['CI'] ? ::Logger::ERROR : ::Logger::DEBUG
 config = ActiveRecord::Base.configurations[db_name]
 
 begin
