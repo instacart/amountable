@@ -1,4 +1,4 @@
-# Copyright 2015-2016, Instacart
+# Copyright 2015-2021, Instacart
 
 db_name = ENV['DB'] || 'postgresql'
 spec_dir = Pathname.new(File.dirname(__FILE__)) / '..'

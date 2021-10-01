@@ -1,4 +1,4 @@
-# Copyright 2015-2017, Instacart
+# Copyright 2015-2021, Instacart
 
 module Amountable
   class Amount < ActiveRecord::Base
