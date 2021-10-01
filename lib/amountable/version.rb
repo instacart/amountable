@@ -1,5 +1,5 @@
-# Copyright 2015-2017, Instacart
+# Copyright 2015-2021, Instacart
 
 module Amountable
-  VERSION = '0.3.2'
+  VERSION = '0.4.0'
 end
