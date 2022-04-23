@@ -119,6 +119,7 @@ module Amountable
         super
       end
     end
+    ruby2_keywords :where if Module.private_method_defined?(:ruby2_keywords)
 
     def where_json(opts, *rest)
       values = []
@@ -136,6 +137,7 @@ module Amountable
       query = [query.join(' AND ')] + values
       where(query, *rest).where(opts, *rest)
     end
+    ruby2_keywords :where_json if Module.private_method_defined?(:ruby2_keywords)
 
     def pg_json_field_access(name, field = :cents)
       name = name.to_sym

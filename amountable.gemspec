@@ -15,7 +15,7 @@ Gem::Specification.new do |gem|
   gem.files         = `git ls-files`.split($/)
   gem.test_files    = gem.files.grep(%r{^spec/})
   gem.require_paths = ['lib']
-  gem.required_ruby_version     = '>= 2.6'
+  gem.required_ruby_version     = '>= 2.7'
 
   gem.add_dependency 'activerecord', '>= 5.2', '< 7'
   gem.add_dependency 'activerecord-import', '>= 0.19.1'

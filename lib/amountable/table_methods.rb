@@ -19,15 +19,15 @@ module Amountable
       amount.value
     end
 
-    def save(args = {})
+    def save(**args)
       ActiveRecord::Base.transaction do
-        save_amounts if super(args)
+        save_amounts if super
       end
     end
 
-    def save!(args = {})
+    def save!(**args)
       ActiveRecord::Base.transaction do
-        save_amounts! if super(args)
+        save_amounts! if super
       end
     end
 
