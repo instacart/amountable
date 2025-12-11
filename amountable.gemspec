@@ -15,11 +15,11 @@ Gem::Specification.new do |gem|
   gem.files         = `git ls-files`.split($/)
   gem.test_files    = gem.files.grep(%r{^spec/})
   gem.require_paths = ['lib']
-  gem.required_ruby_version     = '>= 2.7'
+  gem.required_ruby_version     = '>= 3.3'
 
-  gem.add_dependency 'activerecord', '>= 5.2', '< 9'
-  gem.add_dependency 'activerecord-import', '>= 0.19.1'
-  gem.add_dependency 'money-rails', '>=1.7.0'
+  gem.add_dependency 'activerecord', '>= 7.0', '< 9'
+  gem.add_dependency 'activerecord-import', '>= 2.0.0'
+  gem.add_dependency 'money-rails', '>= 1.7.0'
   gem.add_dependency 'monetize'
 
   gem.add_development_dependency 'sqlite3'
@@ -27,7 +27,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'pg'
 
   gem.add_development_dependency 'rspec-rails'
-  gem.add_development_dependency 'rspec'
   gem.add_development_dependency 'database_cleaner'
   gem.add_development_dependency 'db-query-matchers'
 end
