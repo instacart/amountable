@@ -12,6 +12,9 @@ require 'amountable/amount'
 require 'database_cleaner'
 require 'db-query-matchers'
 
+Money.locale_backend = :i18n
+Money.default_currency = "USD"
+
 RSpec.configure do |config|
 
   config.before(:suite) do
