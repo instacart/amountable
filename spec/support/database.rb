@@ -8,14 +8,10 @@ database_yml = spec_dir.join('internal/config/database.yml')
 
 fail "Please create #{database_yml} first to configure your database. Take a look at: #{database_yml}.sample" unless File.exist?(database_yml)
 
-module ActiveRecord::Import::Connection
-  ruby2_keywords :establish_connection if Module.private_method_defined?(:ruby2_keywords)
-end
-
 ActiveRecord::Migration.verbose = false
-ActiveRecord::Base.default_timezone = :utc
+ActiveRecord.try(:default_timezone=, :utc) || ActiveRecord::Base.default_timezone = :utc
 ActiveRecord::Base.configurations = YAML.load_file(database_yml)
-ActiveRecord::Base.logger = Logger.new(File.join(File.dirname(__FILE__), '../debug.log'))
+ActiveRecord::Base.logger = Logger.new(File.join(__dir__, '../debug.log'))
 ActiveRecord::Base.logger.level = ENV['CI'] ? ::Logger::ERROR : ::Logger::DEBUG
 configs = ActiveRecord::Base.configurations
 config = configs.try(:find_db_config, db_name) || configs[db_name]
