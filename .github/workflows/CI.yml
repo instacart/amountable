@@ -51,3 +51,10 @@ jobs:
           PGHOST: 127.0.0.1
           PGUSER: postgres
           RAILS_ENV: test
+  main:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    steps:
+      - run: |
+         echo "Confirmed all jobs passed"
